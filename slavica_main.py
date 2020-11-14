@@ -11,11 +11,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import os
 import random
-import ConfigParser
+import configparser
 
 # Read token################################
-config = ConfigParser.ConfigParser()
-config.readfp(open(r'TOKEN.cfg'))
+config = configparser.ConfigParser()
+config.read_file(open(r'TOKEN.cfg'))
 TOKEN = config.get('TOKENS', 'TOKEN_1')
 ############################################
 
@@ -75,11 +75,6 @@ async def vic(ctx):
 @bot.command()
 async def ispovest(ctx):
 
-    video = ispovesti.sample()
-
-    #video_name = video['Title'].iloc[0]
-
-    #video_link = video['URL'].iloc[0]
     ispovest = random.choice(os.listdir("Ispovesti"))
     video_name = ispovest[:-4]
     video_link = 'Ispovesti/' + ispovest
