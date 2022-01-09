@@ -1,14 +1,6 @@
 import discord
 from discord.ext import commands
-import pandas as pd
-from youtube_dl import YoutubeDL
 from discord import FFmpegPCMAudio
-from bs4 import BeautifulSoup
-import requests
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 import os
 import random
 import configparser
@@ -157,8 +149,7 @@ async def play(ctx, url):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info=ydl.extract_info(url, download=False)
             url2= info['formats'][0]['url']
-            source= await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-            voice_channel.play(source)
+            voice_channel.play(FFmpegPCMAudio(source=url2, **FFMPEG_OPTIONS))
 
         voice_channel.is_playing()
 
