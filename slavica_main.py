@@ -163,7 +163,7 @@ async def play(ctx, url : str):
     voice.play(discord.FFmpegPCMAudio("song.mp3"))
     """
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        song_info = ydl.extract_info(url, download=False)
+        song_info = ydl.extract_info(url, download=True)
 
     server = ctx.message.guild
 
