@@ -169,8 +169,6 @@ async def play(ctx, url : str):
 
         voice_channel.is_playing()
 
-        await ctx.send('Ime klipa')
-
     else:
 
         await ctx.send("Cekaj da se zavrsi play ili kucaj '!stop'.")
