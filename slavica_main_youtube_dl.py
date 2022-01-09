@@ -137,6 +137,11 @@ async def ispovest(ctx):
 
 @bot.command()
 async def play(ctx, url : str):
+
+    def is_connected(ctx):
+        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+        return voice_client and voice_client.is_connected()
+
     song_there = os.path.isfile("song.mp3")
     try:
         if song_there:
@@ -146,8 +151,11 @@ async def play(ctx, url : str):
         return
 
     voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
-    await voiceChannel.connect()
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    
+    if not is_connected(ctx):
+        await voiceChannel.connect()
+
 
     ydl_opts = {
         'format': 'bestaudio/best',
