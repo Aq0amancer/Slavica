@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 import random
 import configparser
-import youtube_dl
+from youtube_dl import YoutubeDL
 
 # Read token################################
 config = configparser.ConfigParser()
