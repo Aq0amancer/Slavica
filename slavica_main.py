@@ -154,20 +154,11 @@ async def play(ctx, url : str):
             'preferredquality': '192',
         }],
     }
-    """""
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-    for file in os.listdir("./"):
-        if file.endswith(".mp3"):
-            os.rename(file, "song.mp3")
-    voice.play(discord.FFmpegPCMAudio("song.mp3"))
-    """
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        song_info = ydl.download(url)
 
     server = ctx.message.guild
 
     voice_channel = server.voice_client
+
     if not voice_channel.is_playing():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
