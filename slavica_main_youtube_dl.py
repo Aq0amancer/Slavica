@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 import random
 import configparser
-import yt_dlp
+import youtube_dl
 
 # Read token################################
 config = configparser.ConfigParser()
@@ -157,7 +157,7 @@ async def play(ctx, url : str):
             'preferredquality': '192',
         }],
     }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
     for file in os.listdir("./"):
         if file.endswith(".mp3"):
