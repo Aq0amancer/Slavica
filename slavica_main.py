@@ -136,7 +136,7 @@ async def ispovest(ctx):
         return
 
 @bot.command()
-async def play(ctx, url : str):
+async def play(ctx, url):
 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
