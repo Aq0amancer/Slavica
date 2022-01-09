@@ -163,15 +163,17 @@ async def play(ctx, url : str):
     voice.play(discord.FFmpegPCMAudio("song.mp3"))
     """
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        filename = await ydl.from_url(url, loop=bot.loop)
+        song_info = ydl.extract_info(url, download=False)
 
     if not voice.is_playing():
-
-        voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
+        ctx.guild.voice_client.play(discord.FFmpegPCMAudio(song_info["formats"][0]["url"]))
+        ctx.guild.voice_client.source = discord.PCMVolumeTransformer(ctx.guild.voice_client.source)
+        ctx.guild.voice_client.source.volume = 1
+        #voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=song_info["formats"][0]["url"]))
 
         voice.is_playing()
 
-        await ctx.send(filename)
+        await ctx.send('Ime klipa')
 
     else:
 
