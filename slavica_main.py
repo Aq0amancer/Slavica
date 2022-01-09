@@ -146,7 +146,8 @@ async def play(ctx, url : str):
         return
 
     voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
-    if not voiceChannel.is_connected():
+    voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+    if not voice_client.is_connected():
         await voiceChannel.connect()
 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
@@ -169,9 +170,10 @@ async def play(ctx, url : str):
 
 @bot.command()
 async def leave(ctx):
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if voice.is_connected():
-        await voice.disconnect()
+    voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
+    voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if voice_client.is_connected():
+        await voiceChannel.disconnect()
     else:
         await ctx.send("The bot is not connected to a voice channel.")
 
