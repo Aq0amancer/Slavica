@@ -138,19 +138,6 @@ async def ispovest(ctx):
 @bot.command()
 async def play(ctx, url : str):
 
-    def is_connected(ctx):
-        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
-        return voice_client and voice_client.is_connected()
-
-    song_there = os.path.isfile("song.mp3")
-    try:
-        if song_there:
-            os.remove("song.mp3")
-    except PermissionError:
-        await ctx.send("Wait for the current playing music to end or use the 'stop' command")
-        return
-
-    #voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     if ctx.voice_client is None:
@@ -167,13 +154,31 @@ async def play(ctx, url : str):
             'preferredquality': '192',
         }],
     }
+    """""
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
     for file in os.listdir("./"):
         if file.endswith(".mp3"):
             os.rename(file, "song.mp3")
     voice.play(discord.FFmpegPCMAudio("song.mp3"))
+    """
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        filename = await ydl.from_url(url, loop=bot.loop)
 
+    if not voice.is_playing():
+
+        voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
+
+        voice.is_playing()
+
+        await ctx.send(filename)
+
+    else:
+
+        await ctx.send("Cekaj da se zavrsi play ili kucaj '!stop'.")
+
+    return
+    
 
 @bot.command()
 async def leave(ctx):
