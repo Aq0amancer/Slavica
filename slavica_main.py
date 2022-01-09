@@ -151,10 +151,13 @@ async def play(ctx, url : str):
         return
 
     #voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    #voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
-    if is_connected(ctx):
-        await voice.connect()
+    if ctx.voice_client is None:
+
+        channel = ctx.author.voice.channel
+
+        await channel.connect()
 
     ydl_opts = {
         'format': 'bestaudio/best',
