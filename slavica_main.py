@@ -151,7 +151,7 @@ async def play(ctx, url : str):
         return
 
     #voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
-    #voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     if ctx.voice_client is None:
 
