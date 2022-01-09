@@ -146,7 +146,9 @@ async def play(ctx, url : str):
         return
 
     voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
-    await voiceChannel.connect()
+    if not voiceChannel.is_connected():
+        await voiceChannel.connect()
+
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     ydl_opts = {
