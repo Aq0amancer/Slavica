@@ -148,7 +148,7 @@ async def play(ctx, url):
     if not voice_channel.is_playing():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info=ydl.extract_info(url, download=False)
-            url2= info['formats'][1]['url']
+            url2= info['formats'][0]['url']
             print(url2)
             voice_channel.play(FFmpegPCMAudio(source=url2, **FFMPEG_OPTIONS))
 
