@@ -151,6 +151,11 @@ async def play(ctx, url):
         voice.is_playing()
         await ctx.send('Bot is playing')
 
+    # check if the bot is already playing
+    else:
+        await ctx.send("Bot is already playing")
+        return
+
 
 @bot.command()
 async def leave(ctx):
