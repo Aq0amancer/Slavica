@@ -3,7 +3,6 @@ from discord.ext import commands
 import pandas as pd
 from youtube_dl import YoutubeDL
 from discord import FFmpegPCMAudio
-from discord.utils import get
 from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
@@ -13,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 import random
 import configparser
-from youtube_dl import YoutubeDL
+import youtube_dl
 
 # Read token################################
 config = configparser.ConfigParser()
@@ -137,24 +136,33 @@ async def ispovest(ctx):
         return
 
 @bot.command()
-async def play(ctx, url):
-    YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
-    FFMPEG_OPTIONS = {
-        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-    voice = get(bot.voice_clients, guild=ctx.guild)
-
-    if not voice.is_playing():
-        with YoutubeDL(YDL_OPTIONS) as ydl:
-            info = ydl.extract_info(url, download=False)
-        URL = info['url']
-        voice.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
-        voice.is_playing()
-        await ctx.send('Bot is playing')
-
-    # check if the bot is already playing
-    else:
-        await ctx.send("Bot is already playing")
+async def play(ctx, url : str):
+    song_there = os.path.isfile("song.mp3")
+    try:
+        if song_there:
+            os.remove("song.mp3")
+    except PermissionError:
+        await ctx.send("Wait for the current playing music to end or use the 'stop' command")
         return
+
+    voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
+    await voiceChannel.connect()
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+    for file in os.listdir("./"):
+        if file.endswith(".mp3"):
+            os.rename(file, "song.mp3")
+    voice.play(discord.FFmpegPCMAudio("song.mp3"))
 
 
 @bot.command()
