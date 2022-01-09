@@ -1,14 +1,6 @@
 import discord
 from discord.ext import commands
-import pandas as pd
-from youtube_dl import YoutubeDL
 from discord import FFmpegPCMAudio
-from bs4 import BeautifulSoup
-import requests
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 import os
 import random
 import configparser
@@ -136,7 +128,7 @@ async def ispovest(ctx):
         return
 
 @bot.command()
-async def play(ctx, url : str):
+async def play(ctx, url):
 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
@@ -147,25 +139,18 @@ async def play(ctx, url : str):
         await channel.connect()
 
     ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
+        'format': 'bestaudio'}
 
     server = ctx.message.guild
 
     voice_channel = server.voice_client
-
+    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': 'vn'}
     if not voice_channel.is_playing():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
-        for file in os.listdir("./"):
-            if file.endswith(".mp3"):
-                os.rename(file, "song.mp3")
-        voice_channel.play(discord.FFmpegPCMAudio("song.mp3"))\
+            info=ydl.extract_info(url, download=False)
+            url2= info['formats'][0]['url']
+            print(url2)
+            voice_channel.play(FFmpegPCMAudio(source=url2, **FFMPEG_OPTIONS))
 
         voice_channel.is_playing()
 
