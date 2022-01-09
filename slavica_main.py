@@ -158,7 +158,7 @@ async def play(ctx, url : str):
     server = ctx.message.guild
 
     voice_channel = server.voice_client
-    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': 'vn'}
     if not voice_channel.is_playing():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info=ydl.extract_info(url, download=False)
