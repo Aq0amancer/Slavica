@@ -147,13 +147,7 @@ async def play(ctx, url):
         await channel.connect()
 
     ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
+        'format': 'bestaudio'}
 
     server = ctx.message.guild
 
