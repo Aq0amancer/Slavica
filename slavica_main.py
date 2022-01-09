@@ -163,16 +163,18 @@ async def play(ctx, url : str):
     voice.play(discord.FFmpegPCMAudio("song.mp3"))
     """
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        song_info = ydl.extract_info(url, download=True)
+        song_info = ydl.download(url)
 
     server = ctx.message.guild
 
     voice_channel = server.voice_client
     if not voice_channel.is_playing():
-        ctx.guild.voice_client.play(discord.FFmpegPCMAudio(song_info["formats"][0]["url"]))
-        ctx.guild.voice_client.source = discord.PCMVolumeTransformer(ctx.guild.voice_client.source)
-        ctx.guild.voice_client.source.volume = 1
-        #voice.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=song_info["formats"][0]["url"]))
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+        for file in os.listdir("./"):
+            if file.endswith(".mp3"):
+                os.rename(file, "song.mp3")
+        voice_channel.play(discord.FFmpegPCMAudio("song.mp3"))
 
         voice_channel.is_playing()
 
