@@ -1,14 +1,6 @@
 import discord
 from discord.ext import commands
-import pandas as pd
-from youtube_dl import YoutubeDL
 from discord import FFmpegPCMAudio
-from bs4 import BeautifulSoup
-import requests
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 import os
 import random
 import configparser
@@ -152,7 +144,7 @@ async def play(ctx, url : str):
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
             'preferredquality': '192',
-        }],
+        }],'noplaylist' : 1,
     }
 
     server = ctx.message.guild
