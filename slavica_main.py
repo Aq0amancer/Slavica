@@ -5,15 +5,39 @@ import os
 import random
 import configparser
 import yt_dlp
+import openai
+import urllib
 
 # Read token################################
 config = configparser.ConfigParser()
 config.read_file(open(r'TOKEN.cfg'))
 TOKEN = config.get('TOKENS', 'TOKEN_1')
+openai.api_key=config.get('TOKENS', 'OPENAI_API_KEY')
 ############################################
+# Radio URLS
+radio_urls={'tdi':'https://streaming.tdiradio.com/tdiradio.mp3','bbc':'http://stream.live.vc.bbcmedia.co.uk/bbc_radio_one'}
 
 bot = commands.Bot(command_prefix='!')
 
+## Open AI
+
+def generate_image(prompt):
+    response = openai.Image.create(
+    prompt=prompt,
+    n=1,
+    size="256x256"
+    )
+    return response['data'][0]['url']
+
+# Chat GPT text completion
+def generate_text(prompt):
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+    )
+    return completion.choices[0].message.content
 
 @ bot.event
 async def on_ready():
@@ -34,6 +58,20 @@ async def test(ctx, arg):
 
     await ctx.send(arg)
 
+# PAINTED WORLD OF SLAVICA
+@bot.command()
+async def nacrtaj(ctx,prompt):
+    # Get AI generated image
+    image_url=generate_image(prompt)
+    image_path=f'/home/pi/Slavica/openai_images/{prompt}.jpg'
+    urllib.request.urlretrieve(image_url, image_path)
+    await ctx.send(file=discord.File(image_path))
+
+@bot.command()
+async def napisi(ctx,prompt):
+    # Get AI generated image
+    text_response=generate_text(prompt)
+    await ctx.send(text_response)
 
 @bot.command()
 async def cibe(ctx):
@@ -63,6 +101,17 @@ async def vic(ctx):
     vic_text = driver.find_element_by_xpath("//*[@class='col-lg-12']").text
 
     web_url = 'https://vicevi.net/site/best?page=15'
+
+
+@bot.command()
+async def radio(ctx, url: str = random.choice(list(radio_urls.values()))):
+    channel = ctx.message.author.voice.channel
+    global player
+    try:
+        player = await channel.connect()
+    except:
+        pass
+    player.play(FFmpegPCMAudio(random.choice(list(radio_urls.values()))))
 
 
 @bot.command()
@@ -124,7 +173,6 @@ async def ispovest(ctx):
     else:
 
         await ctx.send("Cekaj da zavrsim pricu")
-
         return
 
 @bot.command()
